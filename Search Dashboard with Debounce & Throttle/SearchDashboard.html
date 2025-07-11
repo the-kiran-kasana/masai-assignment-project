@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+  <style>
+    input {
+       padding:10px;
+       width:300px;
+       box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+       margin-left:570px;
+
+    }
+    h2{
+      text-align:center;
+       margin-top:100px;
+
+    }
+    button{
+      padding:10px;
+      box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+      border: 2px solid #ccc;
+      cursor: pointer;
+    }
+
+    button:hover {
+        background: #fff;
+    }
+
+
+  </style>
+</head>
+<body>
+   <h2>Search Dashboard with Debounce & Throttle</h2>
+
+   <form>
+     <input type="text" id="SearchUserDetails" placeholder="Search with me..." name="search">
+     <button id="loadUsersBtn">Search</button>
+   </form>
+
+  <div id="userdata"></div>
+</body>
+
+<script>
+
+
+
+<!--let name = "Emily"-->
+
+
+<!--fetch('https://dummyjson.com/users')-->
+<!--    .then(res => res.json())-->
+<!--    .then(data => {-->
+<!--           data.users.forEach(user => {-->
+
+<!--                    if(name === user.firstName)-->
+<!--                    {-->
+<!--                              document.getElementById("userdata").innerHTML += `-->
+<!--                                <div style="border: 2px solid #ccc; margin: 10px; padding: 20px; margin-top:100px;">-->
+<!--                                  <h3>${user.firstName}</h3>-->
+<!--                                  <p>Last Name: ${user.lastName}</p>-->
+<!--                                  <p>Maiden Name: ${user.maidenName}</p>-->
+<!--                                  <p>Age: ${user.age}</p>-->
+<!--                                  <p>Gender: ${user.gender}</p>-->
+<!--                                  <p>Email: ${user.email}</p>-->
+<!--                                  <p>Birth Date: ${user.birthDate}</p>-->
+<!--                                  <img src="${user.image}" alt="${user.firstName}" width="100" />-->
+<!--                                  <p>Phone: ${user.phone}</p>-->
+<!--                                </div>-->
+<!--                              `;-->
+<!--                    }-->
+<!--           });-->
+<!--    });-->
+
+
+
+
+<!--document.getElementById("loadUsersBtn").addEventListener("click" , function(){-->
+let UserName = document.getElementById("SearchUserDetails").value;
+
+
+function loadUsersBtn(){
+
+
+   fetch('https://dummyjson.com/users')
+    .then(res => res.json())
+    .then(data => {
+
+           data.users.forEach(user => {
+
+                    if(UserName === user.firstName)
+                    {
+                              document.getElementById("userdata").innerHTML += `
+                                <div style="border: 2px solid #ccc; margin: 10px; padding: 20px; margin-top:100px;">
+                                  <h3>${user.firstName}</h3>
+                                  <p>Last Name: ${user.lastName}</p>
+                                  <p>Maiden Name: ${user.maidenName}</p>
+                                  <p>Age: ${user.age}</p>
+                                  <p>Gender: ${user.gender}</p>
+                                  <p>Email: ${user.email}</p>
+                                  <p>Birth Date: ${user.birthDate}</p>
+                                  <img src="${user.image}" alt="${user.firstName}" width="100" />
+                                  <p>Phone: ${user.phone}</p>
+                                </div>
+                              `;
+                     }
+           });
+    });
+
+    }
+
+    loadUsersBtn()
+<!--});-->
+
+</script>
+</html>
