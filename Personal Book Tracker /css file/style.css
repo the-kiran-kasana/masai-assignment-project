@@ -1,0 +1,10 @@
+
+ .userForm {
+          border:2px solid #ccc;
+          padding:100px 50px;
+          margin-left:500px;
+          margin-top:200px;
+          width:200px;
+          display: inline-block;
+          gap:20px;
+        }
