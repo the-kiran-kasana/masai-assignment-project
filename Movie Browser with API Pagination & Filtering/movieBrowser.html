@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Movie Browser</title>
+  <style>
+
+    .movieClass{
+     border : 2px solid #ccc;
+     padding:40px;
+     margin : 50px;
+     display:inline-block;
+     grid-template-columns: repeat(3 , 1fr);
+    }
+
+
+   .movieClass:hover {
+      transform: scale(1.03);
+      box-shadow: rgba(0, 0, 0, 0.25) 0px 25px 55px,
+                  rgba(0, 0, 0, 0.12) 0px -12px 30px;
+}
+
+  </style>
+</head>
+<body>
+
+<header style = "text-align:center" >
+   <h1 style = "text-align:center">welcome to movie browser</h1>
+</header>
+
+
+
+
+
+   <input type="text" id="movieFilter" placeholder="Filter by name or genre..." style="margin-left: 500px; padding: 10px; width: 500px;" />
+
+
+
+
+<div style="float:right">
+<label>sort movies by :</label>
+<select id="moviesSort" name="movies">
+  <option value="Select">Select</option>
+  <option id="RatingId" value="Rating">Rating: High to Low</option>
+  <option id="AlphaId" value="Alpha">Alpha by Title</option>
+</select>
+</div>
+
+
+
+   <div id="movieDats"></div>
+
+
+
+
+   <div id="pagination" style="padding:20px;margin-left:650px;">
+     <button id="prevPage" style="padding:10px;">Prev</button>
+     <span id="pageNumber" style="padding:10px;"></span>
+     <button id="nextPage" style="padding:10px;">Next</button>
+   </div>
+
+
+</body>
+
+<script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+let currentPage = 1;
+let limit = 9;
+let currentMovies = [];
+
+function fetchMovie(page) {
+  fetch(`https://api.tvmaze.com/shows?page=${page}`)
+    .then(res => res.json())
+    .then(data => {
+      currentMovies = data.slice(0, limit);
+      renderMovies(currentMovies);
+      document.getElementById("pageNumber").innerText = `Page ${currentPage}`;
+    });
+}
+
+function renderMovies(movies) {
+  const container = document.getElementById("movieDats");
+  container.innerHTML = '';
+
+  movies.forEach(movie => {
+    container.innerHTML += `
+      <div class="movieClass">
+        <img src="${movie.image?.original || ''}" style="width: 300px; height:300px;">
+        <h2>${movie.name}</h2>
+        <h3>${movie.genres.join(", ")}</h3>
+        <h3>Rating: ${movie.rating.average || 'N/A'}</h3>
+      </div>
+    `;
+  });
+}
+
+// ✅ Sorting dropdown
+document.getElementById("moviesSort").addEventListener("change", function () {
+  const value = this.value;
+  let sortedMovies = [...currentMovies];
+
+  if (value === "Rating") {
+    sortedMovies.sort((a, b) => (b.rating.average || 0) - (a.rating.average || 0));
+  } else if (value === "Alpha" || value === "Name") {
+    sortedMovies.sort((a, b) => a.name.localeCompare(b.name));
+  }
+
+  renderMovies(sortedMovies);
+});
+
+
+document.getElementById("movieFilter").addEventListener("input", function () {
+  const searchTerm = this.value.toLowerCase();
+
+  const filteredMovies = currentMovies.filter(movie =>
+    movie.name.toLowerCase().includes(searchTerm) ||
+    movie.genres.join(", ").toLowerCase().includes(searchTerm)
+  );
+
+  renderMovies(filteredMovies);
+});
+
+// ✅ Pagination
+document.getElementById("prevPage").addEventListener("click", () => {
+  if (currentPage > 0) {
+    currentPage--;
+    fetchMovie(currentPage);
+  }
+});
+
+document.getElementById("nextPage").addEventListener("click", () => {
+  currentPage++;
+  fetchMovie(currentPage);
+});
+
+// ✅ Load first page
+fetchMovie(currentPage);
+
+</script>
+</html>

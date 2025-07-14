@@ -9,17 +9,17 @@
 <h2>welcome to book tracker website</h2>
 <button type="submit" id="logoutBTN" onclick="logoutBTNfn(event)">logout</button>
 
-<button id="openFormBtn" onclick="addBtn()">Add a New Book</button>
+<button id="openFormBtn">Add a New Book</button>
 
 <div id="formContainer" style="display: none; margin-top: 20px;">
     <form id="myForm">
-        <label for="bookId">book title:</label>
-        <input type="text" id="bookId" placeholder="enter book title.. " required><br><br>
+        <label for="bookTitle">book title:</label>
+        <input type="text" id="bookTitle" placeholder="enter book title.. " required><br><br>
 
-        <label for="authorId">Email:</label>
-        <input type="text" id="authorId" required  placeholder="enter author.. "><br><br>
+        <label for="authorName">Author:</label>
+        <input type="text" id="authorName" required  placeholder="enter author.. "><br><br>
 
-        <button type="submit">Submit</button>
+        <button onclick="saveBook()">Save</button>
     </form>
 </div>
 
@@ -33,11 +33,10 @@
 
 
       import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
-      import { getFirestore, doc, setDoc } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
+      import { getFirestore,doc, collection,setDoc,addDoc } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
 
 
       const firebaseConfig = {
-
           apiKey: "AIzaSyApK1SCNpMz80Z9ZT3qI-MxbMApIQHoUBc",
           authDomain: "book1-eade2.firebaseapp.com",
           databaseURL: "https://book1-eade2-default-rtdb.firebaseio.com",
@@ -48,19 +47,30 @@
           measurementId: "G-0L932367MS"
       };
 
-      // Initialize Firebase
+
       const app = initializeApp(firebaseConfig);
       const db = getFirestore(app);
 
 
-       let bookTitle = document.getElementById("formContainer").value
-       let Author = document.getElementById("formContainer").value
+                 const bookTitle = document.getElementById("bookTitle").value
+                 const author = document.getElementById("authorName").value
 
-      // Add data to Firestore
-      await setDoc(doc(db, "Books"), {
-        title: bookTitle,
-        author: Author
-      });
+                  try {
+                      const docRef = addDoc(collection(db, "books"), {
+                      title: bookTitle,
+                      author: author
+          });
+          console.log("Document written with ID: ", docRef.id);
+        } catch (e) {
+          console.error("Error adding document: ", e);
+        }
+
+
+
+
+
+
+
 
 
 
