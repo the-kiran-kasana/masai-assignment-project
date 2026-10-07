@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Firebase User Roles</title>
+</head>
+<body>
+
+<h2>User Registration</h2>
+<input type="text" id="name" placeholder="Enter Name"><br><br>
+<input type="email" id="email" placeholder="Enter Email"><br><br>
+<input type="password" id="password" placeholder="Enter Password"><br><br>
+
+<label for="role">Select Role:</label>
+<select id="role">
+  <option value="user">User</option>
+  <option value="admin">Admin</option>
+</select><br><br>
+
+<button onclick="registerUser()">Register</button>
+
+<hr>
+
+<h2>Login</h2>
+<input type="email" id="loginEmail" placeholder="Enter Email"><br><br>
+<input type="password" id="loginPassword" placeholder="Enter Password"><br><br>
+<button onclick="loginUser()">Login</button>
+
+<div id="adminPanel" style="display: none; margin-top: 20px;">
+  <h3>Admin Panel</h3>
+  <button>Add Product</button>
+  <button>Edit Product</button>
+  <button>Delete Product</button>
+</div>
+
+<div id="userPanel" style="display: none; margin-top: 20px;">
+  <h3>User Panel</h3>
+  <p>View-only product list...</p>
+</div>
+
+<script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";
+    import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-auth.js";
+    import { getDatabase, ref, set, get } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-database.js";
+
+   const firebaseConfig = {
+
+    apiKey: "AIzaSyALAfQ7NumMkuMRNZvd87mqN76dc-FZzNc",
+
+    authDomain: "creatingusingreal-timeapis.firebaseapp.com",
+
+    databaseURL: "https://creatingusingreal-timeapis-default-rtdb.firebaseio.com",
+
+    projectId: "creatingusingreal-timeapis",
+
+    storageBucket: "creatingusingreal-timeapis.firebasestorage.app",
+
+    messagingSenderId: "433304636844",
+
+    appId: "1:433304636844:web:6feb6f5d69785d9107fe09",
+
+    measurementId: "G-R427EQ3TW6"
+
+  };
+
+
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getDatabase(app);
+
+    window.registerUser = function () {
+      const name = document.getElementById("name").value;
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+      const role = document.getElementById("role").value;
+
+      createUserWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {
+          const uid = userCredential.user.uid;
+
+          set(ref(db, 'users/' + uid), {
+            name: name,
+            email: email,
+            role: role
+          });
+
+          alert("User registered as " + role);
+        })
+        .catch((error) => {
+          alert(error.message);
+        });
+    };
+
+    window.loginUser = function () {
+      const email = document.getElementById("loginEmail").value;
+      const password = document.getElementById("loginPassword").value;
+
+      signInWithEmailAndPassword(auth, email, password)
+        .then((userCredential) => {
+          const uid = userCredential.user.uid;
+
+          get(ref(db, 'users/' + uid)).then((snapshot) => {
+            const userData = snapshot.val();
+            if (userData.role === "admin") {
+              document.getElementById("adminPanel").style.display = "block";
+              document.getElementById("userPanel").style.display = "none";
+            } else {
+              document.getElementById("userPanel").style.display = "block";
+              document.getElementById("adminPanel").style.display = "none";
+            }
+          });
+        })
+        .catch((error) => {
+          alert("Login failed: " + error.message);
+        });
+    };
+  </script>
+</body>
+</html>

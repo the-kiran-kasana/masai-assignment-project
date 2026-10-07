@@ -33,84 +33,137 @@
 <body>
    <h2>Search Dashboard with Debounce & Throttle</h2>
 
+   <button id="saveBtn">Save</button>
    <form>
      <input type="text" id="SearchUserDetails" placeholder="Search with me..." name="search">
-     <button id="loadUsersBtn">Search</button>
+     <button id="loadUsersBtn" onclick="loadUsersBtnfn()">Search</button>
    </form>
+   <div id="userdata"></div>
 
-  <div id="userdata"></div>
+
+
 </body>
 
 <script>
+let allUsers = [];
 
+// Fetch users ONCE
 
-
-<!--let name = "Emily"-->
-
-
-<!--fetch('https://dummyjson.com/users')-->
-<!--    .then(res => res.json())-->
-<!--    .then(data => {-->
-<!--           data.users.forEach(user => {-->
-
-<!--                    if(name === user.firstName)-->
-<!--                    {-->
-<!--                              document.getElementById("userdata").innerHTML += `-->
-<!--                                <div style="border: 2px solid #ccc; margin: 10px; padding: 20px; margin-top:100px;">-->
-<!--                                  <h3>${user.firstName}</h3>-->
-<!--                                  <p>Last Name: ${user.lastName}</p>-->
-<!--                                  <p>Maiden Name: ${user.maidenName}</p>-->
-<!--                                  <p>Age: ${user.age}</p>-->
-<!--                                  <p>Gender: ${user.gender}</p>-->
-<!--                                  <p>Email: ${user.email}</p>-->
-<!--                                  <p>Birth Date: ${user.birthDate}</p>-->
-<!--                                  <img src="${user.image}" alt="${user.firstName}" width="100" />-->
-<!--                                  <p>Phone: ${user.phone}</p>-->
-<!--                                </div>-->
-<!--                              `;-->
-<!--                    }-->
-<!--           });-->
-<!--    });-->
-
-
-
-
-<!--document.getElementById("loadUsersBtn").addEventListener("click" , function(){-->
-let UserName = document.getElementById("SearchUserDetails").value;
-
-
-function loadUsersBtn(){
-
-
-   fetch('https://dummyjson.com/users')
+  fetch('https://dummyjson.com/users')
     .then(res => res.json())
     .then(data => {
-
-           data.users.forEach(user => {
-
-                    if(UserName === user.firstName)
-                    {
-                              document.getElementById("userdata").innerHTML += `
-                                <div style="border: 2px solid #ccc; margin: 10px; padding: 20px; margin-top:100px;">
-                                  <h3>${user.firstName}</h3>
-                                  <p>Last Name: ${user.lastName}</p>
-                                  <p>Maiden Name: ${user.maidenName}</p>
-                                  <p>Age: ${user.age}</p>
-                                  <p>Gender: ${user.gender}</p>
-                                  <p>Email: ${user.email}</p>
-                                  <p>Birth Date: ${user.birthDate}</p>
-                                  <img src="${user.image}" alt="${user.firstName}" width="100" />
-                                  <p>Phone: ${user.phone}</p>
-                                </div>
-                              `;
-                     }
-           });
+      allUsers = data.users;
+      renderUsers(allUsers);
     });
 
-    }
 
-    loadUsersBtn()
-<!--});-->
+// Display matching users
+function renderUsers(users) {
+  const container = document.getElementById("userdata");
+  container.innerHTML = "";
+
+  if (users.length === 0) {
+    container.innerHTML = "<p>No matching users found.</p>";
+    return;
+  }
+
+  users.forEach(user => {
+    container.innerHTML += `
+      <div style="border: 2px solid #ccc; margin: 10px; padding: 20px;">
+        <h3>${user.firstName}</h3>
+        <p>Last Name: ${user.lastName}</p>
+        <p>Maiden Name: ${user.maidenName}</p>
+        <p>Age: ${user.age}</p>
+        <p>Gender: ${user.gender}</p>
+        <p>Email: ${user.email}</p>
+        <p>Birth Date: ${user.birthDate}</p>
+        <img src="${user.image}" alt="${user.firstName}" width="100" />
+        <p>Phone: ${user.phone}</p>
+      </div>
+    `;
+  });
+}
+
+
+
+
+
+
+
+// ✅ Debounce function
+function debounce(func, delay) {
+  let timer;
+  return function (...args) {
+    clearTimeout(timer);
+    timer = setTimeout(() => func.apply(this, args), delay);
+  };
+}
+
+
+const handleInput = debounce(function (event) {
+  const value = event.target.value;
+  console.log("Searching for:", value);
+
+    const filteredUsers = allUsers.filter(user =>
+    user.firstName.toLowerCase().includes(value)
+  );
+
+   renderUsers(filteredUsers);
+
+}, 20000);
+
+
+document.getElementById("SearchUserDetails").addEventListener("input", handleInput);
+
+
+
+
+
+
+
+
+function throttle(func, limit) {
+  let lastCall = 0;
+  return function (...args) {
+    const now = Date.now();
+    if (now - lastCall >= limit) {
+      lastCall = now;
+      func.apply(this, args);
+    }
+  };
+}
+
+// Example: Scroll listener
+const handleScroll = throttle(() => {
+  console.log("Scrolled at", new Date().toLocaleTimeString());
+}, 1000);
+
+window.addEventListener("scroll", handleScroll);
+
+
+
+
+
+
+
+
+<!--function debounce(func, delay) {-->
+<!--  let timer;-->
+<!--  return function (...args) {-->
+<!--    clearTimeout(timer);-->
+<!--    timer = setTimeout(() => func.apply(this, args), delay);-->
+<!--  };-->
+<!--}-->
+
+<!--const saveHandler = debounce(function () {-->
+<!--  console.log("Saved at", new Date().toLocaleTimeString());-->
+<!--}, 1000);-->
+
+
+
+<!--document.getElementById("saveBtn").addEventListener("click", saveHandler);-->
+
+
 
 </script>
 </html>

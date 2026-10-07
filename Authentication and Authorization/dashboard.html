@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Dashboard</title>
+</head>
+<body>
+<h2>Welcome to Dashboard</h2>
+<p id="userInfo"></p>
+<button onclick="logout()">Logout</button>
+
+<script src="dashboard.js"></script>
+</body>
+
+<script>
+    window.onload = function () {
+    const user = sessionStorage.getItem("user");
+
+    if (!user) {
+        window.location.href = "login.html"; // Redirect if not logged in
+    } else {
+        document.getElementById("userInfo").textContent = "Logged in as: " + user;
+    }
+};
+
+function logout() {
+    sessionStorage.removeItem("user");
+    window.location.href = "login.html";
+}
+
+
+</script>
+</html>
+

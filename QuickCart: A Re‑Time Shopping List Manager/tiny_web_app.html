@@ -1,0 +1,264 @@
+<!--<!DOCTYPE html>-->
+<!--<html lang="en">-->
+<!--<head>-->
+<!--    <meta charset="UTF-8">-->
+<!--    <title>tiny web app</title>-->
+<!--</head>-->
+<!--<body>-->
+
+
+<!--<h2>Add Item</h2>-->
+<!--  <form id="itemForm">-->
+<!--    <input type="text" id="name" placeholder="Item Name" required />-->
+<!--    <input type="number" id="qty" placeholder="Quantity" min="1" required />-->
+<!--    <input type="number" id="price" placeholder="Price ₹" min="0" required />-->
+<!--    <select id="category">-->
+<!--      <option>Dairy</option>-->
+<!--      <option>Produce</option>-->
+<!--      <option>Snacks</option>-->
+<!--    </select>-->
+<!--    <button type="submit">Add Item</button>-->
+<!--  </form>-->
+
+
+
+
+
+
+
+
+
+<!--<h3 id="summary">Total items: 0 | Grand cost: ₹0</h3>-->
+
+<!--<div>-->
+<!--  <button onclick="filterItems('All')">All</button>-->
+<!--  <button onclick="filterItems('Dairy')">Dairy</button>-->
+<!--  <button onclick="filterItems('Produce')">Produce</button>-->
+<!--  <button onclick="filterItems('Snacks')">Snacks</button>-->
+<!--</div>-->
+
+
+
+
+
+
+<!--<h2>item list</h2>-->
+<!--<ul id="itemList"></ul>-->
+<!--<div id="toast" style="display:none; background: #222; color: #fff; padding: 10px; margin-top: 10px;">Item deleted.-->
+<!--  <button onclick="undoDelete()">Undo</button>-->
+<!--</div>-->
+
+
+
+
+
+
+
+<!--</body>-->
+
+
+<!--<script type="module">-->
+
+<!--    import { initializeApp } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-app.js";-->
+<!--    import { getDatabase, ref, push , onChildAdded , onChildRemoved , remove} from "https://www.gstatic.com/firebasejs/11.10.0/firebase-database.js";-->
+
+<!--    const firebaseConfig = {-->
+<!--    apiKey: "AIzaSyDvYFi2g_17dIH2rSRx7tnUUKGcRE9Goa0",-->
+<!--    authDomain: "my-firebase-app-3eda9.firebaseapp.com",-->
+<!--    databaseURL: "https://my-firebase-app-3eda9-default-rtdb.firebaseio.com",-->
+<!--    projectId: "my-firebase-app-3eda9",-->
+<!--    storageBucket: "my-firebase-app-3eda9.firebasestorage.app",-->
+<!--    messagingSenderId: "714251733227",-->
+<!--    appId: "1:714251733227:web:cf9d17a31ff7f0995f16ae",-->
+<!--    measurementId: "G-QG79329V0X"-->
+<!--  };-->
+
+
+<!--    const app = initializeApp(firebaseConfig);-->
+<!--    const db = getDatabase(app);-->
+<!--    const itemRef = ref(db, "items");-->
+
+
+
+
+
+<!--    const URL = "https://my-firebase-app-3eda9-default-rtdb.firebaseio.com/items.json";-->
+<!--    const itemList = document.getElementById("itemList");-->
+<!--    const toast = document.getElementById("toast");-->
+<!--    let undoTimer;-->
+<!--    const summary = document.getElementById("summary");-->
+<!--    let allItems = [];-->
+
+
+
+
+<!--//add items  into firebase-->
+
+<!--    const form = document.getElementById("itemForm");-->
+<!--    const nameInput = document.getElementById("name");-->
+<!--    const qtyInput = document.getElementById("qty");-->
+<!--    const priceInput = document.getElementById("price");-->
+<!--    const categoryInput = document.getElementById("category");-->
+
+<!--   form.addEventListener("submit", async (e) => {-->
+<!--    e.preventDefault();-->
+
+<!--    const item = {-->
+<!--      name: nameInput.value.trim(),-->
+<!--      qty: qtyInput.value,-->
+<!--      price: priceInput.value,-->
+<!--      category: categoryInput.value,-->
+<!--    };-->
+
+<!--    try {-->
+<!--      await push(itemRef, item);-->
+<!--      console.log("Item added to Firebase ");-->
+<!--    }catch (error) {-->
+<!--      console.error(" Failed to add in Firebase:", error);-->
+<!--    }-->
+<!--    form.reset();-->
+<!--  });-->
+
+
+
+
+
+<!--const fetchData = () => {-->
+<!--  fetch(URL)-->
+<!--    .then(response => response.json())-->
+<!--    .then(data => {-->
+<!--      itemList.innerHTML = ""; // clear old items-->
+
+<!--      for (let id in data) {-->
+<!--        const item = data[id];-->
+<!--        const li = document.createElement("li");-->
+
+<!--        li.innerHTML = `${item.name} × ${item.qty} — ₹${item.price}-->
+<!--          <button onclick="deleteItem('${id}')" style="background-color: var(&#45;&#45;transparent-blue); border:1px solid #ccc"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQA-kfEDHbM0PDQ6hdT8wC0UKQmhw276K7BMQ&s" style="width:20px"></button>`;-->
+
+<!--        itemList.appendChild(li);-->
+<!--      }-->
+<!--    });-->
+<!--};-->
+
+
+
+
+<!--const deleteData = (key) => {-->
+<!--  fetch(URL, {-->
+<!--    method: 'DELETE',-->
+<!--  })-->
+<!--  .then(response => {-->
+<!--    if (response.ok) {-->
+<!--      console.log("Data deleted successfully");-->
+<!--    } else {-->
+<!--      console.error("Error deleting data");-->
+<!--    }-->
+<!--  })-->
+<!--  .catch(error => console.error("Error deleting data:", error));-->
+<!--};-->
+
+<!--// Example usage: delete user1-->
+
+
+
+<!--fetchData();-->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!--function ItemData() {-->
+<!--  fetch(`${URL}.json`)-->
+<!--    .then(res => res.json())-->
+<!--    .then(data => {-->
+<!--      allItems = [];-->
+
+<!--      for (let id in data) {-->
+<!--        allItems.push({ id, ...data[id] });-->
+<!--      }-->
+<!--      renderItems(allItems);-->
+<!--    });-->
+<!--}-->
+
+
+
+<!--function renderItems(items) {-->
+<!--  itemList.innerHTML = "";-->
+
+<!--  items.forEach(item => {-->
+<!--    const li = document.createElement("li");-->
+<!--    li.id = item.id;-->
+<!--    li.innerHTML = `${item.name} × ${item.qty} — ₹${item.price}-->
+<!--      <button onclick="deleteItem('${item.id}', '${item.name}', ${item.qty}, ${item.price}, '${item.category}')">🗑️</button>`;-->
+<!--    itemList.appendChild(li);-->
+<!--  });-->
+
+
+<!-- const totalQty = items.reduce((sum, item) => sum + Number(item.qty), 0);-->
+<!--  const totalCost = items.reduce((sum, item) => sum + Number(item.price), 0);-->
+<!--  summary.innerText = `Total items: ${totalQty} | Grand cost: ₹${totalCost}`;-->
+<!--}-->
+
+
+
+
+<!--function filterItems(category) {-->
+<!--  if (category === "All") {-->
+<!--    renderItems(allItems);-->
+<!--  } else {-->
+<!--    const filtered = allItems.filter(item => item.category === category);-->
+<!--    renderItems(filtered);-->
+<!--  }-->
+<!--}-->
+
+<!--ItemData();-->
+
+<!--  </script>-->
+<!--</html>-->
+
+
+
+<!--&lt;!&ndash;deleteData('-OVHEJx9ZF2IGUKdJcYs');&ndash;&gt;-->
+<!--&lt;!&ndash;        timestamp: Date.now()&ndash;&gt;-->
+
+
+
+
+
+<!--&lt;!&ndash;const fetchData = () => {&ndash;&gt;-->
+<!--&lt;!&ndash;  fetch(URL)&ndash;&gt;-->
+<!--&lt;!&ndash;    .then(response => response.json())&ndash;&gt;-->
+<!--&lt;!&ndash;    .then(data => {&ndash;&gt;-->
+<!--&lt;!&ndash;      itemList.innerHTML = ""; // clear old items&ndash;&gt;-->
+
+<!--&lt;!&ndash;      for (let id in data) {&ndash;&gt;-->
+<!--&lt;!&ndash;        const item = data[id];&ndash;&gt;-->
+<!--&lt;!&ndash;        const li = document.createElement("li");&ndash;&gt;-->
+
+<!--&lt;!&ndash;        li.innerHTML = `${item.name} × ${item.qty} — ₹${item.price}&ndash;&gt;-->
+<!--&lt;!&ndash;          <button onclick="deleteItem('${id}')" style="background-color: var(&#45;&#45;transparent-blue); border:1px solid #ccc"><img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQA-kfEDHbM0PDQ6hdT8wC0UKQmhw276K7BMQ&s" style="width:20px"></button>`;&ndash;&gt;-->
+
+<!--&lt;!&ndash;        itemList.appendChild(li);&ndash;&gt;-->
+<!--&lt;!&ndash;      }&ndash;&gt;-->
+<!--&lt;!&ndash;    });&ndash;&gt;-->
+<!--&lt;!&ndash;};&ndash;&gt;-->
+
+
+<!--&lt;!&ndash;const deleteItem = (id) => {&ndash;&gt;-->
+<!--&lt;!&ndash;  fetch(URL, {&ndash;&gt;-->
+<!--&lt;!&ndash;    method: "DELETE"&ndash;&gt;-->
+<!--&lt;!&ndash;  }).then(() => fetchData());&ndash;&gt;-->
+<!--&lt;!&ndash;};&ndash;&gt;-->
+
+
+<!--&lt;!&ndash;fetchData();&ndash;&gt;-->

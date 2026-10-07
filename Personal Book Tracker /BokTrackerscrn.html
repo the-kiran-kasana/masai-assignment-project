@@ -26,6 +26,8 @@
 
 </body>
 <script type="module">
+
+
         document.getElementById("openFormBtn").addEventListener("click", function () {
                        const formDiv = document.getElementById("formContainer");
                        formDiv.style.display = "block";
@@ -52,18 +54,30 @@
       const db = getFirestore(app);
 
 
-                 const bookTitle = document.getElementById("bookTitle").value
-                 const author = document.getElementById("authorName").value
 
-                  try {
-                      const docRef = addDoc(collection(db, "books"), {
-                      title: bookTitle,
-                      author: author
-          });
-          console.log("Document written with ID: ", docRef.id);
-        } catch (e) {
-          console.error("Error adding document: ", e);
-        }
+async function saveBook() {
+  const bookTitle = document.getElementById("bookTitle").value.trim();
+  const author = document.getElementById("authorName").value.trim();
+
+  if (!bookTitle || !author) {
+    alert("Please fill in both fields.");
+    return;
+  }
+
+  try {
+    const docRef = await addDoc(collection(db, "books"), {
+      title: bookTitle,
+      author: author
+    });
+
+    console.log("Document written with ID:", docRef.id);
+    alert("Book added successfully!");
+    document.getElementById("myForm").reset(); // clear form after submit
+  } catch (e) {
+    console.error("Error adding document: ", e);
+    alert("Failed to add book");
+  }
+}
 
 
 

@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>user crud</title>
+</head>
+<body>
+
+<h1>welcome to user page</h1>
+<div id="userData"></div>
+</body>
+
+<script>
+
+  const URL = 'https://crud-operations-e909a-default-rtdb.firebaseio.com/userdata/users.json';
+
+const fetchData = () => {
+  fetch(URL)
+    .then(response => response.json())
+    .then(data => {
+
+      Object.entries(data).forEach(([key, value]) => {
+        console.log(`User: ${value.name}, Email: ${value.email}`);
+      });
+    })
+    .catch(error => console.error("Error fetching data:", error));
+};
+
+fetchData();
+
+
+
+fetch('https://crud-operations-e909a-default-rtdb.firebaseio.com/userdata/users.json', {
+  method: 'POST',
+  headers: {
+    'Content-Type': 'application/json',
+  },
+  body: JSON.stringify({
+    name: "Kiran Kasana",
+    email: "kiran@example.com"
+  }),
+})
+
+
+
+
+<!--const updateData = (key, updatedData) => {-->
+<!--  fetch(`https://crud-operations-e909a-default-rtdb.firebaseio.com/userdata/users/${key}.json`, {-->
+<!--    method: 'PATCH',-->
+<!--    headers: {-->
+<!--      'Content-Type': 'application/json',-->
+<!--    },-->
+<!--    body: JSON.stringify(updatedData),-->
+<!--  })-->
+<!--  }-->
+
+
+<!--updateData('user2', { email: "newemail@example.com" });-->
+
+
+
+
+
+
+
+const deleteData = (key) => {
+  fetch(`https://crud-operations-e909a-default-rtdb.firebaseio.com/userdata/users/${key}.json`, {
+    method: 'DELETE',
+  })
+  .then(response => {
+    if (response.ok) {
+      console.log("Data deleted successfully");
+    } else {
+      console.error("Error deleting data");
+    }
+  })
+  .catch(error => console.error("Error deleting data:", error));
+};
+
+// Example usage: delete user1
+deleteData('-OVCzwvFpFgZrZKWg98q');
+
+
+
+
+</script>
+</html>
